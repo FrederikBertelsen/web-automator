@@ -6,5 +6,6 @@ __version__ = "0.3.0"
 
 from .browser_wrapper import BrowserWrapper
 from .page_wrapper import PageWrapper
+from .data_collector import DataCollector
 
-__all__ = ["BrowserWrapper", "PageWrapper", "__version__"]
+__all__ = ["BrowserWrapper", "PageWrapper", "DataCollector", "__version__"]
