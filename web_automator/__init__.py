@@ -2,7 +2,7 @@
 This package provides a small wrapper around Playwright/Camoufox for simple web automation tasks.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 from .browser_wrapper import BrowserWrapper
 from .page_wrapper import PageWrapper
