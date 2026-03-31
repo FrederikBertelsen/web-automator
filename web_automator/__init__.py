@@ -1,12 +1,10 @@
 """web_automator package
-
-This package provides a small wrapper around Playwright/Camoufox for
-simple web automation tasks.
+This package provides a small wrapper around Playwright/Camoufox for simple web automation tasks.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
-from .auto_browser import AutoBrowser
-from .auto_page import AutoPage
+from .browser_wrapper import BrowserWrapper
+from .page_wrapper import PageWrapper
 
-__all__ = ["AutoBrowser", "AutoPage", "__version__"]
+__all__ = ["BrowserWrapper", "PageWrapper", "__version__"]

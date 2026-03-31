@@ -1,10 +1,9 @@
 import os
 
 from playwright.sync_api import Page, Locator
-from typing import Optional, Any
 import random
 
-class AutoPage:
+class PageWrapper:
     def __init__(self, page: Page):
         self.page = page
 
@@ -84,7 +83,7 @@ class AutoPage:
     def inner_texts(self, selector: str, has_text: str | None = None) -> list[str] | None:
         try:
             return self.locator(selector, has_text=has_text).all_text_contents()
-        except:
+        except Exception as e:
             self._print_error(
                 f'getting texts "{selector}"',
                 Exception("locator/all_text_contents failed"),

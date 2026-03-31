@@ -2,10 +2,10 @@ from contextlib import contextmanager
 
 from camoufox import Camoufox
 
-from .auto_page import AutoPage
+from .page_wrapper import PageWrapper
 
 
-class AutoBrowser:
+class BrowserWrapper:
     def __init__(self):
         self._browser = None
 
@@ -43,7 +43,7 @@ class AutoBrowser:
                 self._browser.close()
                 self._browser = None
 
-    def new_page(self) -> AutoPage:
+    def new_page(self) -> PageWrapper:
         if not self._browser:
             raise RuntimeError(
                 "Browser not started. Use start_browser() context manager."
@@ -51,4 +51,4 @@ class AutoBrowser:
 
         page = self._browser.new_page()
 
-        return AutoPage(page)
+        return PageWrapper(page)
