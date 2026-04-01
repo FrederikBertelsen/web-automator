@@ -97,6 +97,9 @@ class PageWrapper:
             )
             return None
 
+    def get_text(self, selector: str, has_text: str | None = None) -> str | None:
+        return self.inner_text(selector, has_text=has_text)
+
     def get_texts(self, selector: str, has_text: str | None = None) -> list[str] | None:
         return self.inner_texts(selector, has_text=has_text)
 
