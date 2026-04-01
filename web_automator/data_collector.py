@@ -1,5 +1,5 @@
 from typing import Dict, List
-
+import os
 import pandas as pd
 
 class DataCollector:
@@ -43,4 +43,7 @@ class DataCollector:
 
     def save_csv(self, file_path: str):
         df_data = self.to_dataframe()
+        dir_path = os.path.dirname(file_path)
+        if dir_path and not os.path.exists(dir_path):
+            os.makedirs(dir_path, exist_ok=True)
         df_data.to_csv(file_path, index=False)
