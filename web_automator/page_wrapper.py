@@ -45,6 +45,13 @@ class PageWrapper:
                 # small random backoff before retrying
                 self.sleep_random(500, 1500)
 
+    def get_url(self) -> str:
+        try:
+            return self.page.url
+        except Exception as e:
+            self._print_error("getting current URL", e)
+            raise
+
     def locator(self, selector: str, has_text: str | None = None) -> Locator:
         try:
             return self.page.locator(selector, has_text=has_text)
@@ -141,19 +148,59 @@ class PageWrapper:
 
     def login(
         self,
+        login_url: str,
         username_selector: str,
         password_selector: str,
         submit_selector: str,
         username: str,
         password: str,
+        success_selector: str | None = None,
+        success_url_contains: str | None = None,
+        post_login_url: str | None = None,
+        cookies_file: str | None = None,
     ) -> bool:
         try:
-            self.fill(username_selector, username)
-            self.sleep_random(500, 1000)
-            self.fill(password_selector, password)
-            self.sleep_random(500, 1000)
-            self.click(submit_selector)
-            self.sleep_random(500, 1000)
+            cookies_loaded = bool(cookies_file and self.load_cookies_if_exists(cookies_file))
+
+            if not cookies_loaded:
+                self.goto(login_url)
+                self.wait_for_idle(timeout=10000)
+
+                if not self.wait_for_selector(username_selector):
+                    self._print_error("login", Exception("username selector not found"))
+                    return False
+
+                if not self.fill(username_selector, username):
+                    self._print_error("login", Exception("failed to fill username"))
+                    return False
+                self.sleep_random(300, 500)
+
+                if not self.fill(password_selector, password):
+                    self._print_error("login", Exception("failed to fill password"))
+                    return False
+                self.sleep_random(300, 500)
+
+                if not self.click(submit_selector):
+                    self._print_error("login", Exception("failed to click submit"))
+                    return False
+
+                self.wait_for_idle(timeout=10000)
+
+            if post_login_url and post_login_url not in self.page.url:
+                    self.goto(post_login_url)
+                    self.wait_for_idle(timeout=10000)
+
+            if cookies_file:
+                try:
+                    self.save_cookies(cookies_file)
+                except Exception as e:
+                    self._print_error("saving cookies", e)
+
+            if success_selector:
+                return self.wait_for_selector(success_selector, timeout=10000)
+            if success_url_contains:
+                return success_url_contains.lower() in self.page.url.lower()
+
             return True
         except Exception as e:
             self._print_error("logging in", e)
@@ -165,15 +212,14 @@ class PageWrapper:
             elm = self.page.wait_for_selector(selector, timeout=timeout, state=state)
             return elm is not None
         except Exception as e:
-            self._print_error(f'waiting for "{selector}"', e)
-            raise
+            return False
 
-    def wait_for_idle(self, timeout: int = 5000):
+    def wait_for_idle(self, timeout: int = 5000) -> bool:
         try:
             self.page.wait_for_load_state("networkidle", timeout=timeout)
+            return True
         except Exception as e:
-            self._print_error("waiting for network idle", e)
-            raise
+            return False
 
     def exists(self, selector: str, has_text: str | None = None) -> bool:
         try:
@@ -233,18 +279,14 @@ class PageWrapper:
             self._print_error("evaluating js with args", e)
             raise
     
-    def save_cookies(self, path: str = "cookies.json") -> None:
-        path=f"cookies/{path}"
-
+    def save_cookies(self, path: str = "cookies/cookies.json") -> None:
         try:
             self.page.context.storage_state(path=path)
         except Exception as e:
             self._print_error("saving cookies", e)
             raise
     
-    def load_cookies_if_exists(self, path: str = "cookies.json") -> bool:
-        path=f"cookies/{path}"
-        
+    def load_cookies_if_exists(self, path: str = "cookies/cookies.json") -> bool:
         try:
             import json
             import time
