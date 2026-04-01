@@ -284,6 +284,10 @@ class PageWrapper:
     
     def save_cookies(self, path: str = "cookies/cookies.json") -> None:
         try:
+            dir_path = os.path.dirname(path)
+            if dir_path and not os.path.exists(dir_path):
+                os.makedirs(dir_path, exist_ok=True)
+
             self.page.context.storage_state(path=path)
         except Exception as e:
             self._print_error("saving cookies", e)
