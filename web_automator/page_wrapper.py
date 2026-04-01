@@ -176,16 +176,18 @@ class PageWrapper:
                 if not self.fill(username_selector, username):
                     self._print_error("login", Exception("failed to fill username"))
                     return False
-                self.sleep_random(300, 500)
+                self.sleep_random(1000, 2000)
 
                 if not self.fill(password_selector, password):
                     self._print_error("login", Exception("failed to fill password"))
                     return False
-                self.sleep_random(300, 500)
+                self.sleep_random(1000, 2000)
 
                 if not self.click(submit_selector):
                     self._print_error("login", Exception("failed to click submit"))
                     return False
+
+                self.sleep_random(2000, 3000)
 
                 self.wait_for_idle(timeout=10000)
 
