@@ -1,8 +1,8 @@
 """web_automator package
-This package provides a small wrapper around Playwright/Camoufox for simple web automation tasks.
+This package provides a small wrapper around Playwright for simple web automation tasks.
 """
 
-__version__ = "0.4.4"
+__version__ = "0.5.0"
 
 from .browser_wrapper import BrowserWrapper
 from .page_wrapper import PageWrapper

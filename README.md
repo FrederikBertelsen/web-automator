@@ -1,6 +1,6 @@
 # web-automator
 
-Small wrapper around Playwright/Camoufox to simplify browser automation.
+Small wrapper around Playwright to simplify browser automation.
 
 Installation
 
