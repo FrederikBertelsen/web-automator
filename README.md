@@ -56,3 +56,46 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+
+Login example
+
+```py
+import os
+from web_automator import BrowserWrapper
+
+def main():
+    username = os.environ.get("EXAMPLE_USERNAME")
+    password = os.environ.get("EXAMPLE_PASSWORD")
+    if not username or not password:
+        raise SystemExit("Set EXAMPLE_USERNAME and EXAMPLE_PASSWORD")
+
+    with BrowserWrapper().start_browser(headless=True, block_images=True) as browser:
+        page = browser.new_page()
+
+        ok = page.login(
+            login_url="https://example.com/login",
+
+            username_selector="#username",
+            password_selector="#password",
+            submit_selector="button[type='submit']",
+
+            username=username,
+            password=password,
+
+            # Either of these can be used as a success check:
+            success_url_contains="/dashboard",
+            success_selector="a[href='/logout']",
+
+            # Optional: reuse cookies next run to avoid logging in again
+            cookies_file="cookies/example_cookies.json",
+        )
+
+        if not ok:
+            raise SystemExit("Login failed")
+
+        page.goto("https://example.com/dashboard")
+        print(page.title())
+
+if __name__ == "__main__":
+    main()
+```
