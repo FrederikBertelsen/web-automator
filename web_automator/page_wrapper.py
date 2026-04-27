@@ -183,6 +183,10 @@ class PageWrapper:
                     return False
                 self.sleep_random(1000, 2000)
 
+                if not self.wait_for_selector(submit_selector):
+                    self._print_error("login", Exception("submit selector not found"))
+                    return False
+                
                 if not self.click(submit_selector):
                     self._print_error("login", Exception("failed to click submit"))
                     return False
@@ -191,7 +195,7 @@ class PageWrapper:
 
                 self.wait_for_idle(timeout=10000)
 
-            if post_login_url and post_login_url not in self.page.url:
+            if post_login_url and post_login_url not in self.page.url and post_login_url:
                     self.goto(post_login_url)
                     self.wait_for_idle(timeout=10000)
 
