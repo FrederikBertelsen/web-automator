@@ -2,7 +2,7 @@
 This package provides a small wrapper around Playwright for simple web automation tasks.
 """
 
-__version__ = "0.5.1"
+__version__ = "0.6.0"
 
 from .browser_wrapper import BrowserWrapper
 from .page_wrapper import PageWrapper

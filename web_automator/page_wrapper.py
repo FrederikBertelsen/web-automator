@@ -44,7 +44,35 @@ class PageWrapper:
                 self._print_error(f"going to {url} (attempt {attempts}/{retries})", e)
                 # small random backoff before retrying
                 self.sleep_random(500, 1500)
+                
+    def goto_and_wait_for_response(
+        self,
+        url: str,
+        response_url: str,
+        method: str | None = None,
+        timeout: int = 30000,
+    ) -> bool:
+        try:
+            def matches(response):
+                if response.url != response_url:
+                    return False
 
+                if method and response.request.method.upper() != method.upper():
+                    return False
+
+                return True
+
+            with self.page.expect_response(matches, timeout=timeout):
+                self.goto(url)
+
+            return True
+        except Exception as e:
+            self._print_error(
+                f'going to {url} and waiting for response {response_url}',
+                e,
+            )
+            return False
+        
     def get_url(self) -> str:
         try:
             return self.page.url
